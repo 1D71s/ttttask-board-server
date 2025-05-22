@@ -29,6 +29,7 @@ export const getTasks = async (req: AuthenticatedRequest, res: Response) => {
     }
 
     const status = req.query.status as string | undefined;
+    const boardId = req.query.boardId as string | undefined;
 
     if (status && !Object.values(TaskStatus).includes(status as TaskStatus)) {
       res.status(400).send({message: `Invalid status. Allowed: ${Object.values(TaskStatus).join(', ')}`});
@@ -38,6 +39,10 @@ export const getTasks = async (req: AuthenticatedRequest, res: Response) => {
     const whereClause: any = { createdBy: userId };
     if (status) {
       whereClause.status = status;
+    }
+
+    if (boardId) {
+      whereClause.boardId = boardId;
     }
 
     const tasks = await Task.findAll({ where: whereClause });
